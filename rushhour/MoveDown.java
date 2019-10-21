@@ -14,12 +14,22 @@ import search.State;
  */
 public class MoveDown implements Action{
 
+    private Car car;
+
     public int getCost() {
         return 1;
     }
 
     public String toString(){
         return "move down";
+    }
+
+    public void setCar(Car car){
+        this.car = car;
+    }
+
+    public Car getCar(){
+        return this.car;
     }
     
 }

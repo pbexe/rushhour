@@ -14,6 +14,8 @@ import search.State;
  */
 public class MoveUp implements Action{
 
+    private Car car;
+
     public int getCost() {
         return 1;
     }
@@ -22,4 +24,11 @@ public class MoveUp implements Action{
         return "move up";
     }
     
+    public void setCar(Car car){
+        this.car = car;
+    }
+
+    public Car getCar(){
+        return this.car;
+    }
 }

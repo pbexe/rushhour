@@ -4,6 +4,7 @@
  */
 
 package search;
+import rushhour.Car;
 
 /**
  *
@@ -13,5 +14,7 @@ public interface Action {
     
     public int getCost();
     public String toString();
+    public Car getCar();
+    public void setCar();
     
 }

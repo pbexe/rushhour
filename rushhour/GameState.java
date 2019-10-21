@@ -133,7 +133,16 @@ public class GameState implements search.State {
     }
 
     public boolean isLegal(Action action) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(action instanceof MoveLeft)
+            return colBlank!=0;
+        else if(action instanceof MoveRight)
+            return colBlank!=2;
+        else if(action instanceof MoveUp)
+            return rowBlank!=0;
+        else if(action instanceof MoveDown)
+            return rowBlank!=2;
+        else
+            return false;
     }
 
     public State doAction(Action action) {
