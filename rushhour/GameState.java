@@ -129,7 +129,32 @@ public class GameState implements search.State {
     }
 
     public List<Action> getLegalActions() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Action> actions = new ArrayList<Action>();
+        for (Car car : cars) {
+            Action left = new MoveLeft();
+            Action right = new MoveRight();
+            Action up = new MoveUp();
+            Action down = new MoveDown();
+
+            left.setCar(car);
+            right.setCar(car);
+            up.setCar(car);
+            down.setCar(car);
+
+            if (isLegal(left)){
+                actions.add(left);
+            }
+            if (isLegal(right)){
+                actions.add(right);
+            }
+            if (isLegal(up)){
+                actions.add(up);
+            }
+            if (isLegal(down)){
+                actions.add(down);
+            }
+        }
+        return actions;
     }
 
     public boolean isLegal(Action action) {
