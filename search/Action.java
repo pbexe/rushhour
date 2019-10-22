@@ -16,5 +16,7 @@ public interface Action {
     public String toString();
     public Car getCar();
     public void setCar(Car car);
+    public int getDistance();
+    public void setDistance(int distance);
     
 }
