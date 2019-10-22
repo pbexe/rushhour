@@ -15,6 +15,6 @@ public interface Action {
     public int getCost();
     public String toString();
     public Car getCar();
-    public void setCar();
+    public void setCar(Car car);
     
 }

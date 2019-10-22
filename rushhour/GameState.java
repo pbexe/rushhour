@@ -133,14 +133,82 @@ public class GameState implements search.State {
     }
 
     public boolean isLegal(Action action) {
-        if(action instanceof MoveLeft)
-            return colBlank!=0;
-        else if(action instanceof MoveRight)
-            return colBlank!=2;
-        else if(action instanceof MoveUp)
-            return rowBlank!=0;
-        else if(action instanceof MoveDown)
-            return rowBlank!=2;
+        if(action instanceof MoveLeft){
+            Car car = action.getCar();
+            if (car.isVertical()){
+                return false;
+            }
+            if (car.getCol() == 0){
+                return false;
+            }
+            for (Car otherCar : cars) {
+                List<Position> positions = otherCar.getOccupyingPositions();
+                for (Position position : positions) {
+                    // If the space to the left is taken
+                    if ((position.getRow() == car.getRow()) && (position.getCol() == (car.getCol() - 1))){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        else if(action instanceof MoveRight){
+            Car car = action.getCar();
+            if (car.isVertical()){
+                return false;
+            }
+            if (car.getCol() == nrCols - car.getLength() - 1){
+                return false;
+            }
+            for (Car otherCar : cars) {
+                List<Position> positions = otherCar.getOccupyingPositions();
+                for (Position position : positions) {
+                    // If the space to the right is taken
+                    if ((position.getRow() == car.getRow()) && (position.getCol() == (car.getCol() + car.getLength()))){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        else if(action instanceof MoveUp){
+            Car car = action.getCar();
+            if (!car.isVertical()){
+                return false;
+            }
+            if (car.getRow() == 0){
+                return false;
+            }
+            for (Car otherCar : cars) {
+                List<Position> positions = otherCar.getOccupyingPositions();
+                for (Position position : positions) {
+                    // If the space above is taken
+                    if ((position.getCol() == car.getCol()) && (position.getRow() == (car.getRow() - 1))){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        else if(action instanceof MoveDown){
+            Car car = action.getCar();
+            if (!car.isVertical()){
+                return false;
+            }
+            if (car.getRow() == nrRows - car.getLength() - 1){
+                return false;
+            }
+            for (Car otherCar : cars) {
+                List<Position> positions = otherCar.getOccupyingPositions();
+                for (Position position : positions) {
+                    // If the space below is taken
+                    if ((position.getCol() == car.getCol()) && (position.getRow() == (car.getRow() + car.getLength()))){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
         else
             return false;
     }
