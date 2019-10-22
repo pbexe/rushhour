@@ -158,6 +158,8 @@ public class GameState implements search.State {
     }
 
     public boolean isLegal(Action action) {
+        // System.out.print("Checking ");
+        // System.out.println(action);
         if(action instanceof MoveLeft){
             Car car = action.getCar();
             if (car.isVertical()){
@@ -182,7 +184,7 @@ public class GameState implements search.State {
             if (car.isVertical()){
                 return false;
             }
-            if (car.getCol() == nrCols - car.getLength() - 1){
+            if (car.getCol() == nrCols - car.getLength()){
                 return false;
             }
             for (Car otherCar : cars) {
@@ -220,7 +222,7 @@ public class GameState implements search.State {
             if (!car.isVertical()){
                 return false;
             }
-            if (car.getRow() == nrRows - car.getLength() - 1){
+            if (car.getRow() == nrRows - car.getLength() ){
                 return false;
             }
             for (Car otherCar : cars) {
@@ -239,11 +241,39 @@ public class GameState implements search.State {
     }
 
     public State doAction(Action action) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Car car = action.getCar();
+        while (isLegal(action)){
+            System.out.println(action);
+            if (action instanceof MoveLeft){
+                car.setCol(car.getCol() - 1);
+            } else if (action instanceof MoveRight){
+                car.setCol(car.getCol() + 1);
+            } else if (action instanceof MoveUp){
+                car.setRow(car.getRow() - 1);
+            } else if (action instanceof MoveDown){
+                car.setRow(car.getRow() + 1);
+            } else {
+                // You should never get here
+            }
+        }
+        return this;
     }
 
     public int getEstimatedDistanceToGoal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Car goalCar = cars.get(0);
+        int row = goalCar.getRow();
+        int col = goalCar.getCol();
+        int cost = 1;
+        for (Car car : cars.subList(1, cars.size())) {
+            List<Position> positions = car.getOccupyingPositions();
+            for (Position position : positions) {
+                if ((position.getRow() == row)){
+                    cost++;
+                }
+            }
+        }
+        System.out.println(cost);
+        return cost;
     }
 
 }
