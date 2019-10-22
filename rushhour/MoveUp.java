@@ -17,6 +17,15 @@ public class MoveUp implements Action{
     private Car car;
     private int distance;
 
+    public MoveUp(Action move){
+        // this.car = new Car(move.getCar());
+        this.car = move.getCar();
+        this.distance = move.getDistance();
+    }
+
+    public MoveUp(){
+    }
+
     public int getCost() {
         return 1;
     }

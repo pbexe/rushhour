@@ -17,6 +17,15 @@ public class MoveRight implements Action{
     private Car car;
     private int distance;
 
+    public MoveRight(Action move){
+        // this.car = new Car(move.getCar());
+        this.car = move.getCar();
+        this.distance = move.getDistance();
+    }
+
+    public MoveRight(){
+    }
+
     public int getCost() {
         return 1;
     }

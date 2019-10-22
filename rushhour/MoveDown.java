@@ -17,6 +17,16 @@ public class MoveDown implements Action{
     private Car car;
     private int distance;
 
+
+    public MoveDown(Action move){
+        // this.car = new Car(move.getCar());
+        this.car = move.getCar();
+        this.distance = move.getDistance();
+    }
+
+    public MoveDown(){
+    }
+    
     public int getCost() {
         return 1;
     }

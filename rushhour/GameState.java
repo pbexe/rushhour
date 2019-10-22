@@ -141,18 +141,29 @@ public class GameState implements search.State {
             up.setCar(car);
             down.setCar(car);
 
-            if (isLegal(left)){
-                actions.add(left);
+            left.setDistance(1);
+            right.setDistance(1);
+            up.setDistance(1);
+            down.setDistance(1);
+
+            while (isLegal(left)){
+                actions.add(new MoveLeft(left));
+                left.setDistance(left.getDistance() + 1);
             }
-            if (isLegal(right)){
-                actions.add(right);
+            
+            while (isLegal(right)){
+                actions.add(new MoveRight(right));
+                right.setDistance(right.getDistance() + 1);
             }
-            if (isLegal(up)){
-                actions.add(up);
+            while (isLegal(up)){
+                actions.add(new MoveUp(up));
+                up.setDistance(up.getDistance() + 1);
             }
-            if (isLegal(down)){
-                actions.add(down);
+            while (isLegal(down)){
+                actions.add(new MoveDown(down));
+                down.setDistance(down.getDistance() + 1);
             }
+
         }
         return actions;
     }
@@ -162,18 +173,20 @@ public class GameState implements search.State {
         // System.out.println(action);
         if(action instanceof MoveLeft){
             Car car = action.getCar();
+            int distance = action.getDistance();
             if (car.isVertical()){
                 return false;
             }
-            if (car.getCol() == 0){
+            if (car.getCol() - distance <= 0){
                 return false;
             }
             for (Car otherCar : cars) {
                 List<Position> positions = otherCar.getOccupyingPositions();
                 for (Position position : positions) {
-                    // If the space to the left is taken
-                    if ((position.getRow() == car.getRow()) && (position.getCol() == (car.getCol() - 1))){
-                        return false;
+                    for (int i = 1; i <= distance; i++){
+                        if ((position.getRow() == car.getRow()) && (position.getCol() == (car.getCol() - i))){
+                            return false;
+                        }
                     }
                 }
             }
@@ -181,18 +194,20 @@ public class GameState implements search.State {
         }
         else if(action instanceof MoveRight){
             Car car = action.getCar();
+            int distance = action.getDistance();
             if (car.isVertical()){
                 return false;
             }
-            if (car.getCol() == nrCols - car.getLength()){
+            if ((car.getCol() + car.getLength() + distance - 1) > nrCols - 1){
                 return false;
             }
             for (Car otherCar : cars) {
                 List<Position> positions = otherCar.getOccupyingPositions();
                 for (Position position : positions) {
-                    // If the space to the right is taken
-                    if ((position.getRow() == car.getRow()) && (position.getCol() == (car.getCol() + car.getLength()))){
-                        return false;
+                    for (int i = 1; i <= distance; i++) {
+                        if ((position.getRow() == car.getRow()) && (position.getCol() == (car.getCol() + car.getLength() + i - 1))){
+                            return false;
+                        }
                     }
                 }
             }
@@ -200,18 +215,20 @@ public class GameState implements search.State {
         }
         else if(action instanceof MoveUp){
             Car car = action.getCar();
+            int distance = action.getDistance();
             if (!car.isVertical()){
                 return false;
             }
-            if (car.getRow() == 0){
+            if (car.getRow() - distance <= 0){
                 return false;
             }
             for (Car otherCar : cars) {
                 List<Position> positions = otherCar.getOccupyingPositions();
                 for (Position position : positions) {
-                    // If the space above is taken
-                    if ((position.getCol() == car.getCol()) && (position.getRow() == (car.getRow() - 1))){
-                        return false;
+                    for (int i = 1; i <= distance; i++){
+                        if ((position.getCol() == car.getCol()) && (position.getRow() == (car.getRow() - i))){
+                            return false;
+                        }
                     }
                 }
             }
@@ -219,18 +236,20 @@ public class GameState implements search.State {
         }
         else if(action instanceof MoveDown){
             Car car = action.getCar();
+            int distance = action.getDistance();
             if (!car.isVertical()){
                 return false;
             }
-            if (car.getRow() == nrRows - car.getLength() ){
+            if ((car.getRow() + car.getLength() + distance - 1) > nrRows - 1){
                 return false;
             }
             for (Car otherCar : cars) {
                 List<Position> positions = otherCar.getOccupyingPositions();
                 for (Position position : positions) {
-                    // If the space below is taken
-                    if ((position.getCol() == car.getCol()) && (position.getRow() == (car.getRow() + car.getLength()))){
-                        return false;
+                    for (int i = 1; i <= distance; i++) {
+                        if ((position.getCol() == car.getCol()) && (position.getRow() == (car.getRow() + car.getLength() + i - 1))){
+                            return false;
+                        }
                     }
                 }
             }
@@ -243,20 +262,22 @@ public class GameState implements search.State {
     public State doAction(Action action) {
         Car car = action.getCar();
         while (isLegal(action)){
-            System.out.println(action);
             if (action instanceof MoveLeft){
-                car.setCol(car.getCol() - 1);
+                car.setCol(car.getCol() - action.getDistance());
             } else if (action instanceof MoveRight){
-                car.setCol(car.getCol() + 1);
+                car.setCol(car.getCol() + action.getDistance());
             } else if (action instanceof MoveUp){
-                car.setRow(car.getRow() - 1);
+                car.setRow(car.getRow() - action.getDistance());
             } else if (action instanceof MoveDown){
-                car.setRow(car.getRow() + 1);
+                car.setRow(car.getRow() + action.getDistance());
             } else {
                 // You should never get here
             }
         }
-        return this;
+        System.out.println("-----------------");
+        printState();
+        return new GameState(this);
+        // return this;
     }
 
     public int getEstimatedDistanceToGoal() {
@@ -271,9 +292,7 @@ public class GameState implements search.State {
                     cost++;
                 }
             }
-        }
-        System.out.println(cost);
-        return cost;
+        }        return cost;
     }
 
 }
