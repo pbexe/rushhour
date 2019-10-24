@@ -1,3 +1,5 @@
+javac */**.java
+
 java -Xmx2g -Xms2g rushhour/RushHour ./puzzles/random1.txt
 java -Xmx2g -Xms2g rushhour/RushHour ./puzzles/random2.txt
 java -Xmx2g -Xms2g rushhour/RushHour ./puzzles/random3.txt

@@ -277,7 +277,7 @@ public class GameState implements search.State {
         // SELECT newState.car FROM newState, oldState WHERE newState.car.hashCode == oldState.car.hashCode
         Car car = null;
         for (Car newCar : newState.getCars()) {
-            if (newCar.hashCode() == oldCar.hashCode()){
+            if (newCar.equals(oldCar)){
                 car = newCar;
                 break;
             }
