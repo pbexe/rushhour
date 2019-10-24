@@ -317,7 +317,7 @@ public class GameState implements search.State {
                     cost++;
                 }
             }
-        }        return 0;
+        }        return cost;
     }
     
 }
