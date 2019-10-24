@@ -181,7 +181,7 @@ public class GameState implements search.State {
             if (car.isVertical()){
                 return false;
             }
-            if (car.getCol() - distance <= 0){
+            if (car.getCol() - distance < 0){
                 return false;
             }
             for (Car otherCar : cars) {
@@ -227,7 +227,7 @@ public class GameState implements search.State {
             if (!car.isVertical()){
                 return false;
             }
-            if (car.getRow() - distance <= 0){
+            if (car.getRow() - distance < 0){
                 return false;
             }
             for (Car otherCar : cars) {
@@ -282,45 +282,42 @@ public class GameState implements search.State {
                 break;
             }
         }
-        // while (isLegal(action)){
-            if (action instanceof MoveLeft && isLegal(action)){
-                car.setCol(car.getCol() - action.getDistance());
-            } else if (action instanceof MoveRight && isLegal(action)){
-                car.setCol(car.getCol() + action.getDistance());
-            } else if (action instanceof MoveUp && isLegal(action)){
-                car.setRow(car.getRow() - action.getDistance());
-            } else if (action instanceof MoveDown && isLegal(action)){
-                car.setRow(car.getRow() + action.getDistance());
-            } else {
-                System.out.println("Yikes");
-            }
-            // }
-            printState();
-            System.out.println("-----------------");
-            return newState;
+        if (action instanceof MoveLeft && isLegal(action)){
+            car.setCol(car.getCol() - action.getDistance());
+        } else if (action instanceof MoveRight && isLegal(action)){
+            car.setCol(car.getCol() + action.getDistance());
+        } else if (action instanceof MoveUp && isLegal(action)){
+            car.setRow(car.getRow() - action.getDistance());
+        } else if (action instanceof MoveDown && isLegal(action)){
+            car.setRow(car.getRow() + action.getDistance());
+        } else {
+            System.out.println("Yikes");
         }
-
-        public List<Car> getCars(){
-            return cars;
-        }
-        
-        public int getEstimatedDistanceToGoal() {
-            Car goalCar = cars.get(0);
-            int row = goalCar.getRow();
-            int col = goalCar.getCol();
-            if (goalCar.getCol() + goalCar.getLength() == nrCols) {
-                return 0;
-            }
-            int cost = 1;
-            for (Car car : cars.subList(1, cars.size())) {
-                List<Position> positions = car.getOccupyingPositions();
-                for (Position position : positions) {
-                    if ((position.getRow() == row)){
-                        cost++;
-                    }
-                }
-            }        return cost;
-        }
-        
+        // printState();
+        // System.out.println("-----------------");
+        return newState;
     }
     
+    public List<Car> getCars(){
+        return cars;
+    }
+    
+    public int getEstimatedDistanceToGoal() {
+        Car goalCar = cars.get(0);
+        int row = goalCar.getRow();
+        int col = goalCar.getCol();
+        if (goalCar.getCol() + goalCar.getLength() == nrCols) {
+            return 0;
+        }
+        int cost = 1;
+        for (Car car : cars.subList(1, cars.size())) {
+            List<Position> positions = car.getOccupyingPositions();
+            for (Position position : positions) {
+                if ((position.getRow() == row) && car.isVertical() && (position.getCol() > col)){
+                    cost++;
+                }
+            }
+        }        return 0;
+    }
+    
+}
