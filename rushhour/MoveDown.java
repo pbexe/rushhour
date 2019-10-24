@@ -19,8 +19,8 @@ public class MoveDown implements Action{
 
 
     public MoveDown(Action move){
-        // this.car = new Car(move.getCar());
-        this.car = move.getCar();
+        this.car = new Car(move.getCar());
+        // this.car = move.getCar();
         this.distance = move.getDistance();
     }
 

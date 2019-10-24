@@ -1,8 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
 package rushhour;
 
 import java.io.BufferedReader;
@@ -19,16 +19,16 @@ import search.Action;
 import search.State;
 
 /**
- *
- * @author steven
- */
+*
+* @author steven
+*/
 public class GameState implements search.State {
-
+    
     boolean[][] occupiedPositions;
     List<Car> cars; // target car is always the first one    
     int nrRows;
     int nrCols;
-
+    
     public GameState(String fileName) throws Exception {
         BufferedReader in = new BufferedReader(new FileReader(fileName));
         nrRows = Integer.parseInt(in.readLine().split("\\s")[0]);
@@ -41,14 +41,14 @@ public class GameState implements search.State {
         }
         initOccupied();
     }
-
+    
     public GameState(int nrRows, int nrCols, List<Car> cars) {
         this.nrRows = nrRows;
         this.nrCols = nrCols;
         this.cars = cars;
         initOccupied();
     }
-
+    
     public GameState(GameState gs) {
         nrRows = gs.nrRows;
         nrCols = gs.nrCols;
@@ -63,29 +63,33 @@ public class GameState implements search.State {
             cars.add(new Car(c));
         }
     }
-
+    
     public void printState() {
         int[][] state = new int[nrRows][nrCols];
-
+        
         for (int i = 0; i < cars.size(); i++) {
             List<Position> l = cars.get(i).getOccupyingPositions();
             for (Position pos : l) {
                 state[pos.getRow()][pos.getCol()] = i + 1;
             }
         }
-
+        
         for (int i = 0; i < state.length; i++) {
             for (int j = 0; j < state[0].length; j++) {
                 if (state[i][j] == 0) {
                     System.out.print(".");
                 } else {
-                    System.out.print(state[i][j] - 1);
+                    if (state[i][j] - 1 == 0) {
+                        System.out.print("*");
+                    } else {
+                        System.out.print(state[i][j] - 1);
+                    }
                 }
             }
             System.out.println();
         }
     }
-
+    
     private void initOccupied() {
         occupiedPositions = new boolean[nrRows][nrCols];
         for (Car c : cars) {
@@ -95,12 +99,12 @@ public class GameState implements search.State {
             }
         }
     }
-
+    
     public boolean isGoal() {
         Car goalCar = cars.get(0);
         return goalCar.getCol() + goalCar.getLength() == nrCols;
     }
-
+    
     public boolean equals(Object o) {
         if (!(o instanceof GameState)) {
             return false;
@@ -109,11 +113,11 @@ public class GameState implements search.State {
             return nrRows == gs.nrRows && nrCols == gs.nrCols && cars.equals(gs.cars); // note that we don't need to check equality of occupiedPositions since that follows from the equality of cars
         }
     }
-
+    
     public int hashCode() {
         return cars.hashCode();
     }
-
+    
     public void printToFile(String fn) {
         try {
             PrintWriter out = new PrintWriter(new FileWriter(fn));
@@ -127,7 +131,7 @@ public class GameState implements search.State {
             e.printStackTrace();
         }
     }
-
+    
     public List<Action> getLegalActions() {
         ArrayList<Action> actions = new ArrayList<Action>();
         for (Car car : cars) {
@@ -135,17 +139,17 @@ public class GameState implements search.State {
             Action right = new MoveRight();
             Action up = new MoveUp();
             Action down = new MoveDown();
-
+            
             left.setCar(car);
             right.setCar(car);
             up.setCar(car);
             down.setCar(car);
-
+            
             left.setDistance(1);
             right.setDistance(1);
             up.setDistance(1);
             down.setDistance(1);
-
+            
             while (isLegal(left)){
                 actions.add(new MoveLeft(left));
                 left.setDistance(left.getDistance() + 1);
@@ -163,11 +167,11 @@ public class GameState implements search.State {
                 actions.add(new MoveDown(down));
                 down.setDistance(down.getDistance() + 1);
             }
-
+            
         }
         return actions;
     }
-
+    
     public boolean isLegal(Action action) {
         // System.out.print("Checking ");
         // System.out.println(action);
@@ -181,11 +185,13 @@ public class GameState implements search.State {
                 return false;
             }
             for (Car otherCar : cars) {
-                List<Position> positions = otherCar.getOccupyingPositions();
-                for (Position position : positions) {
-                    for (int i = 1; i <= distance; i++){
-                        if ((position.getRow() == car.getRow()) && (position.getCol() == (car.getCol() - i))){
-                            return false;
+                if (otherCar != car) {
+                    List<Position> positions = otherCar.getOccupyingPositions();
+                    for (Position position : positions) {
+                        for (int i = 1; i <= distance; i++){
+                            if ((position.getRow() == car.getRow()) && (position.getCol() == (car.getCol() - i))){
+                                return false;
+                            }
                         }
                     }
                 }
@@ -202,11 +208,13 @@ public class GameState implements search.State {
                 return false;
             }
             for (Car otherCar : cars) {
-                List<Position> positions = otherCar.getOccupyingPositions();
-                for (Position position : positions) {
-                    for (int i = 1; i <= distance; i++) {
-                        if ((position.getRow() == car.getRow()) && (position.getCol() == (car.getCol() + car.getLength() + i - 1))){
-                            return false;
+                if (otherCar != car) {
+                    List<Position> positions = otherCar.getOccupyingPositions();
+                    for (Position position : positions) {
+                        for (int i = 1; i <= distance; i++) {
+                            if ((position.getRow() == car.getRow()) && (position.getCol() == (car.getCol() + car.getLength() + i - 1))){
+                                return false;
+                            }
                         }
                     }
                 }
@@ -223,11 +231,13 @@ public class GameState implements search.State {
                 return false;
             }
             for (Car otherCar : cars) {
-                List<Position> positions = otherCar.getOccupyingPositions();
-                for (Position position : positions) {
-                    for (int i = 1; i <= distance; i++){
-                        if ((position.getCol() == car.getCol()) && (position.getRow() == (car.getRow() - i))){
-                            return false;
+                if (otherCar != car) {
+                    List<Position> positions = otherCar.getOccupyingPositions();
+                    for (Position position : positions) {
+                        for (int i = 1; i <= distance; i++){
+                            if ((position.getCol() == car.getCol()) && (position.getRow() == (car.getRow() - i))){
+                                return false;
+                            }
                         }
                     }
                 }
@@ -244,11 +254,13 @@ public class GameState implements search.State {
                 return false;
             }
             for (Car otherCar : cars) {
-                List<Position> positions = otherCar.getOccupyingPositions();
-                for (Position position : positions) {
-                    for (int i = 1; i <= distance; i++) {
-                        if ((position.getCol() == car.getCol()) && (position.getRow() == (car.getRow() + car.getLength() + i - 1))){
-                            return false;
+                if (otherCar != car) {   
+                    List<Position> positions = otherCar.getOccupyingPositions();
+                    for (Position position : positions) {
+                        for (int i = 1; i <= distance; i++) {
+                            if ((position.getCol() == car.getCol()) && (position.getRow() == (car.getRow() + car.getLength() + i - 1))){
+                                return false;
+                            }
                         }
                     }
                 }
@@ -256,43 +268,59 @@ public class GameState implements search.State {
             return true;
         }
         else
-            return false;
+        return false;
     }
-
+    
     public State doAction(Action action) {
-        Car car = action.getCar();
-        while (isLegal(action)){
-            if (action instanceof MoveLeft){
-                car.setCol(car.getCol() - action.getDistance());
-            } else if (action instanceof MoveRight){
-                car.setCol(car.getCol() + action.getDistance());
-            } else if (action instanceof MoveUp){
-                car.setRow(car.getRow() - action.getDistance());
-            } else if (action instanceof MoveDown){
-                car.setRow(car.getRow() + action.getDistance());
-            } else {
-                // You should never get here
+        GameState newState = new GameState(this);
+        Car oldCar = action.getCar();
+        // SELECT newState.car FROM newState, oldState WHERE newState.car.hashCode == oldState.car.hashCode
+        Car car = null;
+        for (Car newCar : newState.getCars()) {
+            if (newCar.hashCode() == oldCar.hashCode()){
+                car = newCar;
+                break;
             }
         }
-        System.out.println("-----------------");
-        printState();
-        return new GameState(this);
-        // return this;
-    }
-
-    public int getEstimatedDistanceToGoal() {
-        Car goalCar = cars.get(0);
-        int row = goalCar.getRow();
-        int col = goalCar.getCol();
-        int cost = 1;
-        for (Car car : cars.subList(1, cars.size())) {
-            List<Position> positions = car.getOccupyingPositions();
-            for (Position position : positions) {
-                if ((position.getRow() == row)){
-                    cost++;
-                }
+        // while (isLegal(action)){
+            if (action instanceof MoveLeft && isLegal(action)){
+                car.setCol(car.getCol() - action.getDistance());
+            } else if (action instanceof MoveRight && isLegal(action)){
+                car.setCol(car.getCol() + action.getDistance());
+            } else if (action instanceof MoveUp && isLegal(action)){
+                car.setRow(car.getRow() - action.getDistance());
+            } else if (action instanceof MoveDown && isLegal(action)){
+                car.setRow(car.getRow() + action.getDistance());
+            } else {
+                System.out.println("Yikes");
             }
-        }        return cost;
-    }
+            // }
+            printState();
+            System.out.println("-----------------");
+            return newState;
+        }
 
-}
+        public List<Car> getCars(){
+            return cars;
+        }
+        
+        public int getEstimatedDistanceToGoal() {
+            Car goalCar = cars.get(0);
+            int row = goalCar.getRow();
+            int col = goalCar.getCol();
+            if (goalCar.getCol() + goalCar.getLength() == nrCols) {
+                return 0;
+            }
+            int cost = 1;
+            for (Car car : cars.subList(1, cars.size())) {
+                List<Position> positions = car.getOccupyingPositions();
+                for (Position position : positions) {
+                    if ((position.getRow() == row)){
+                        cost++;
+                    }
+                }
+            }        return cost;
+        }
+        
+    }
+    
