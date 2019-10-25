@@ -24,6 +24,11 @@ public class MoveDown implements Action{
         this.distance = move.getDistance();
     }
 
+    public MoveDown(Car car, int distance){
+        this.car = car;
+        this.distance = distance;
+    }
+
     public MoveDown(){
     }
     

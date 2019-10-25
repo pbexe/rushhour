@@ -23,6 +23,11 @@ public class MoveRight implements Action{
         this.distance = move.getDistance();
     }
 
+    public MoveRight(Car car, int distance){
+        this.car = car;
+        this.distance = distance;
+    }
+
     public MoveRight(){
     }
 

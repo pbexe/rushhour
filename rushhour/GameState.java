@@ -135,20 +135,10 @@ public class GameState implements search.State {
     public List<Action> getLegalActions() {
         ArrayList<Action> actions = new ArrayList<Action>();
         for (Car car : cars) {
-            Action left = new MoveLeft();
-            Action right = new MoveRight();
-            Action up = new MoveUp();
-            Action down = new MoveDown();
-            
-            left.setCar(car);
-            right.setCar(car);
-            up.setCar(car);
-            down.setCar(car);
-            
-            left.setDistance(1);
-            right.setDistance(1);
-            up.setDistance(1);
-            down.setDistance(1);
+            Action left = new MoveLeft(car, 1);
+            Action right = new MoveRight(car, 1);
+            Action up = new MoveUp(car, 1);
+            Action down = new MoveDown(car, 1);
             
             while (isLegal(left)){
                 actions.add(new MoveLeft(left));
@@ -274,7 +264,6 @@ public class GameState implements search.State {
     public State doAction(Action action) {
         GameState newState = new GameState(this);
         Car oldCar = action.getCar();
-        // SELECT newState.car FROM newState, oldState WHERE newState.car.hashCode == oldState.car.hashCode
         Car car = null;
         for (Car newCar : newState.getCars()) {
             if (newCar.equals(oldCar)){
@@ -311,13 +300,16 @@ public class GameState implements search.State {
         }
         int cost = 1;
         for (Car car : cars.subList(1, cars.size())) {
-            List<Position> positions = car.getOccupyingPositions();
-            for (Position position : positions) {
-                if ((position.getRow() == row) && car.isVertical() && (position.getCol() > col)){
-                    cost++;
+            if (car.isVertical()) {
+                List<Position> positions = car.getOccupyingPositions();
+                for (Position position : positions) {
+                    if ((position.getRow() == row) && (position.getCol() > col)){
+                        cost++;
+                    }
                 }
             }
-        }        return cost;
+        }      
+        return cost;
     }
     
 }

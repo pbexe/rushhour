@@ -23,6 +23,11 @@ public class MoveUp implements Action{
         this.distance = move.getDistance();
     }
 
+    public MoveUp(Car car, int distance){
+        this.car = car;
+        this.distance = distance;
+    }
+
     public MoveUp(){
     }
 
