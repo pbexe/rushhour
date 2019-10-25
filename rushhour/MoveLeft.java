@@ -9,7 +9,7 @@ import search.Action;
 import search.State;
 
 /**
- *
+ 
  * @author steven
  */
 public class MoveLeft implements Action{
