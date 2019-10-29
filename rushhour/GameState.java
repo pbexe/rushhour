@@ -290,8 +290,8 @@ public class GameState implements search.State {
         int row = goalCar.getRow();
         int col = goalCar.getCol();
         int length = goalCar.getLength();
-        // The initial cost is 0
-        int cost = 0;
+        // The initial cost is 1 as if there are no cars in the way, 1 move is required
+        int cost = 1;
         // For each car that is in the way, add 1 to the cost.
         for (Car car : cars.subList(1, cars.size())) {
             // If the car is vertical and overlaps the current row to the right of the goal car

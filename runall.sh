@@ -1,3 +1,5 @@
+#!/usr/bin/sh
+
 javac */**.java
 
 java -Xmx2g -Xms2g rushhour/RushHour ./puzzles/random1.txt
