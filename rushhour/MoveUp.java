@@ -6,7 +6,6 @@
 package rushhour;
 
 import search.Action;
-import search.State;
 
 /**
  *
@@ -18,7 +17,6 @@ public class MoveUp implements Action{
     private int distance;
 
     public MoveUp(Action move){
-        // this.car = new Car(move.getCar());
         this.car = move.getCar();
         this.distance = move.getDistance();
     }
